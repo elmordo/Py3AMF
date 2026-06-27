@@ -5,7 +5,6 @@
 
 # import ordering is important
 
-import fnmatch
 import os.path
 import platform
 import sys
@@ -262,63 +261,8 @@ version = Version(*%(version)r)
         a.close()
 
 
-def make_extension(mod_name, **extra_options):
-    """
-    Tries is best to return an Extension instance based on the mod_name
-    """
-    base_name = os.path.join(mod_name.replace('.', os.path.sep))
-
-    if have_cython:
-        for ext in ['.pyx', '.py']:
-            source = base_name + ext
-
-            if os.path.exists(source):
-                return Extension(mod_name, [source], **extra_options)
-
-        print('WARNING: Could not find Cython source for %r' % (mod_name,))
-    else:
-        source = base_name + '.c'
-
-        if os.path.exists(source):
-            return Extension(mod_name, [source], **extra_options)
-
-        print('WARNING: Could not build extension for %r, no source found' % (
-            mod_name,))
-
-
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
-
-def get_extensions():
-    """
-    Return a list of Extension instances that can be compiled.
-    """
-    if not can_compile_extensions:
-        # due to changes in pip these prints have no effect
-        print(80 * '*')
-        print('WARNING:')
-        print(
-            '\tAn optional code optimization (C extension) could not be '
-            'compiled.\n\n'
-        )
-        print('\tOptimizations for this package will not be available!\n\n')
-        print('Compiling extensions is not supported on %r' % (sys.platform,))
-        print(80 * '*')
-
-        return []
-
-    extensions = []
-
-    for p in recursive_glob('.', '*.pyx'):
-        mod_name = os.path.splitext(p)[0].replace(os.path.sep, '.')
-
-        e = make_extension(mod_name)
-
-        if e:
-            extensions.append(e)
-
-    return extensions
 
 
 def get_trove_classifiers():
@@ -338,16 +282,6 @@ def get_trove_classifiers():
             return 'Development Status :: 5 - Production/Stable'
 
     return classifiers_ + [dev_status()]
-
-
-def recursive_glob(path, pattern):
-    matches = []
-
-    for root, dirnames, filenames in os.walk(path):
-        for filename in fnmatch.filter(filenames, pattern):
-            matches.append(os.path.normpath(os.path.join(root, filename)))
-
-    return matches
 
 
 name = "Py3AMF"
