@@ -30,8 +30,6 @@ version = (0, 8, 11)
 
 
 def setup_package():
-    set_version(version)
-
     write_version_py()
 
     setup(
@@ -45,7 +43,7 @@ def setup_package():
         keywords=keywords.strip(),
         license=license,
         packages=find_packages(),
-        ext_modules=get_extensions(),
+        ext_modules=get_binary_extensions(),
         install_requires=get_install_requirements(),
         tests_require=get_test_requirements(),
         test_suite="pyamf.tests.get_suite",
@@ -59,9 +57,34 @@ def setup_package():
 
 
 
-_version = None
-
 can_compile_extensions = platform.python_implementation() == "CPython"
+
+
+def get_binary_extensions() -> list[Extension]:
+    if not can_compile_extensions:
+        return []
+
+    extensions = [
+        Extension(
+            name="cpyamf.amf0",
+            sources=["cpyamf/amf0.pyx"]
+        ),
+        Extension(
+            name="cpyamf.amf3",
+            sources=["cpyamf/amf3.pyx"]
+        ),
+        Extension(
+            name="cpyamf.codec",
+            sources=["cpyamf/codec.pyx"]
+        ),
+        Extension(
+            name="cpyamf.util",
+            sources=["cpyamf/util.pyx"]
+        ),
+    ]
+
+    return extensions
+
 
 
 class MyDistribution(Distribution):
@@ -145,17 +168,12 @@ class TestCommand(test.test):
         return test.test.run_tests(self)
 
 
-def set_version(version):
-    global _version
-
-    _version = version
-
 
 def get_version():
     v = ''
     prev = None
 
-    for x in _version:
+    for x in version:
         if prev is not None:
             if isinstance(x, int):
                 v += '.'
@@ -239,7 +257,7 @@ version = Version(*%(version)r)
     a = open(filename, 'wt')
 
     try:
-        a.write(content % {'version': _version})
+        a.write(content % {'version': version})
     finally:
         a.close()
 
@@ -307,11 +325,9 @@ def get_trove_classifiers():
     """
     Return a list of trove classifiers that are setup dependent.
     """
-    classifiers = []
+    classifiers_ = []
 
     def dev_status():
-        version = get_version()
-
         if 'dev' in version:
             return 'Development Status :: 2 - Pre-Alpha'
         elif 'alpha' in version:
@@ -321,7 +337,7 @@ def get_trove_classifiers():
         else:
             return 'Development Status :: 5 - Production/Stable'
 
-    return classifiers + [dev_status()]
+    return classifiers_ + [dev_status()]
 
 
 def recursive_glob(path, pattern):
