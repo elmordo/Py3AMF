@@ -20,8 +20,7 @@ except ImportError:
 
 
 from setuptools.command import sdist
-from setuptools import Extension
-from distutils.core import Distribution
+from setuptools import Extension, Distribution
 
 
 version = (0, 8, 11)
