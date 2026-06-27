@@ -7,7 +7,6 @@
 
 import os.path
 import platform
-import sys
 from setuptools import setup, find_packages
 
 try:
@@ -20,7 +19,7 @@ except ImportError:
     have_cython = False
 
 
-from setuptools.command import test, sdist
+from setuptools.command import sdist
 from setuptools import Extension
 from distutils.core import Distribution
 
@@ -44,8 +43,6 @@ def setup_package():
         packages=find_packages(),
         ext_modules=get_binary_extensions(),
         install_requires=get_install_requirements(),
-        tests_require=get_test_requirements(),
-        test_suite="pyamf.tests.get_suite",
         zip_safe=False,
         extras_require=get_extras_require(),
         classifiers=(
@@ -150,24 +147,6 @@ class MySDist(sdist.sdist):
         return sdist.sdist.run(self)
 
 
-class TestCommand(test.test):
-    """
-    Ensures that unittest2 is imported if required and replaces the old
-    unittest module.
-    """
-
-    def run_tests(self):
-        try:
-            import unittest2
-
-            sys.modules['unittest'] = unittest2
-        except ImportError:
-            pass
-
-        return test.test.run_tests(self)
-
-
-
 def get_version():
     v = ''
     prev = None
@@ -210,7 +189,6 @@ def extra_setup_args():
     return {
         'distclass': MyDistribution,
         'cmdclass': {
-            'test': TestCommand,
             'build_ext': MyBuildExt,
             'sdist': MySDist
         },
@@ -230,15 +208,6 @@ def get_install_requirements():
             install_requires.extend(['Cython>=0.28'])
 
     return install_requires
-
-
-def get_test_requirements():
-    """
-    Returns a list of required packages to run the test suite.
-    """
-    tests_require = []
-
-    return tests_require
 
 
 def write_version_py(filename='pyamf/_version.py'):
