@@ -61,24 +61,11 @@ def setup_package():
     write_version_py()
 
     setup(
-        name=name,
         version=get_version(),
-        description=description,
-        long_description=long_description,
-        url=url,
-        author=author,
-        author_email=author_email,
-        keywords=keywords.strip(),
         license=license,
         packages=find_packages(),
         ext_modules=get_binary_extensions(),
-        install_requires=get_install_requirements(),
         zip_safe=False,
-        extras_require=get_extras_require(),
-        classifiers=(
-            [_f for _f in classifiers.strip().split('\n') if _f] +
-            get_trove_classifiers()
-        ),
         **extra_setup_args())
 
 
@@ -128,17 +115,6 @@ def get_version():
     return v.strip('.')
 
 
-def get_extras_require():
-    return {
-        'twisted': ['Twisted>=16.0.0'],
-        'django': ['Django>=0.96'],
-        'sqlalchemy': ['SQLAlchemy>=0.4'],
-        'elixir': ['Elixir>=0.7.1'],
-        'lxml': ['lxml>=4.4.0'],
-        'six': ['six>=1.10.0']
-    }
-
-
 def get_package_data():
     return {
         'cpyamf': ['*.pxd'],
@@ -155,20 +131,6 @@ def extra_setup_args():
     return {
         'package_data': get_package_data(),
     }
-
-
-def get_install_requirements():
-    """
-    Returns a list of dependencies for PyAMF to function correctly on the
-    target platform.
-    """
-    install_requires = ['defusedxml']
-
-    if 'dev' in get_version():
-        if can_compile_extensions:
-            install_requires.extend(['Cython>=0.28'])
-
-    return install_requires
 
 
 def write_version_py(filename='pyamf/_version.py'):
@@ -193,60 +155,6 @@ version = Version(*%(version)r)
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
-
-def get_trove_classifiers():
-    """
-    Return a list of trove classifiers that are setup dependent.
-    """
-    classifiers_ = []
-
-    def dev_status():
-        if 'dev' in version:
-            return 'Development Status :: 2 - Pre-Alpha'
-        elif 'alpha' in version:
-            return 'Development Status :: 3 - Alpha'
-        elif 'beta' in version:
-            return 'Development Status :: 4 - Beta'
-        else:
-            return 'Development Status :: 5 - Production/Stable'
-
-    return classifiers_ + [dev_status()]
-
-
-name = "Py3AMF"
-description = "AMF support for Python"
-long_description = read('README.rst')
-url = "https://github.com/StdCarrot/Py3AMF"
-author = "The Py3AMF Project"
-author_email = "yhbu@stdc.so"
-license = "MIT License"
-
-classifiers = """
-Framework :: Django
-Framework :: Pylons
-Framework :: Twisted
-Intended Audience :: Developers
-Intended Audience :: Information Technology
-License :: OSI Approved :: MIT License
-Natural Language :: English
-Operating System :: OS Independent
-Programming Language :: C
-Programming Language :: Python
-Programming Language :: Cython
-Programming Language :: Python :: 3.12
-Programming Language :: Python :: 3.13
-Programming Language :: Python :: 3.14
-Topic :: Internet :: WWW/HTTP :: WSGI :: Application
-Topic :: Software Development :: Libraries :: Python Modules
-"""
-
-keywords = """
-python3 amf amf0 amf3 flex flash remoting rpc http flashplayer air bytearray
-objectproxy arraycollection recordset actionscript decoder encoder gateway
-remoteobject twisted pylons django sharedobject lso sol
-"""
-
 
 
 if __name__ == '__main__':
