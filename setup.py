@@ -81,19 +81,23 @@ def get_binary_extensions() -> list[Extension]:
     extensions = [
         Extension(
             name="cpyamf.amf0",
-            sources=["src/cpyamf/amf0.pyx"]
+            sources=["src/cpyamf/amf0.pyx"],
+            include_dirs=["src"],
         ),
         Extension(
             name="cpyamf.amf3",
-            sources=["src/cpyamf/amf3.pyx"]
+            sources=["src/cpyamf/amf3.pyx"],
+            include_dirs=["src"],
         ),
         Extension(
             name="cpyamf.codec",
-            sources=["src/cpyamf/codec.pyx"]
+            sources=["src/cpyamf/codec.pyx"],
+            include_dirs=["src"],
         ),
         Extension(
             name="cpyamf.util",
-            sources=["src/cpyamf/util.pyx"]
+            sources=["src/cpyamf/util.pyx"],
+            include_dirs=["src"],
         ),
     ]
 
