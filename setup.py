@@ -7,6 +7,9 @@
 
 import os.path
 import platform
+from enum import Enum, auto
+from os import environ
+
 from setuptools import setup, find_packages
 
 try:
@@ -19,11 +22,39 @@ except ImportError:
     have_cython = False
 
 
-from setuptools.command import sdist
-from setuptools import Extension, Distribution
+from setuptools import Extension
 
 
 version = (0, 8, 11)
+
+
+class EnvConfig(Enum):
+    """Custom environment flags and configuration values.
+
+    When reading boolean values, the following values are considered truthy:
+
+    - `true`
+    - `yes`
+    - `1`
+    - `on`
+
+    The evaluation is case-insensitive.
+
+    """
+
+    DISABLE_EXT = "PYAMF_DISABLE_EXT"
+    """If set to truthy value, disables the building of the C extensions"""
+
+    def read_from_env(self, fallback: bool = False) -> bool:
+        return self.read_bool_like_val(self.value, fallback)
+
+    @classmethod
+    def read_bool_like_val(cls, key: str, fallback: bool = False) -> bool:
+        val = environ.get(key)
+        if val is None:
+            return fallback
+        val = val.lower()
+        return val in ('true', 'yes', '1', 'on')
 
 
 def setup_package():
@@ -52,11 +83,12 @@ def setup_package():
 
 
 
-can_compile_extensions = platform.python_implementation() == "CPython"
+can_compile_extensions = have_cython and platform.python_implementation() == "CPython"
 
 
 def get_binary_extensions() -> list[Extension]:
-    if not can_compile_extensions:
+
+    if not can_compile_extensions or EnvConfig.DISABLE_EXT.read_from_env():
         return []
 
     extensions = [
@@ -79,71 +111,6 @@ def get_binary_extensions() -> list[Extension]:
     ]
 
     return extensions
-
-
-
-class MyDistribution(Distribution):
-    """
-    This seems to be is the only obvious way to add a global option to
-    distutils.
-
-    Provide the ability to disable building the extensions for any called
-    command.
-    """
-
-    global_options = Distribution.global_options + [
-        ('disable-ext', None, 'Disable building extensions.')
-    ]
-
-    def finalize_options(self):
-        Distribution.finalize_options(self)
-
-        try:
-            i = self.script_args.index('--disable-ext')
-        except ValueError:
-            self.disable_ext = False
-        else:
-            self.disable_ext = True
-            self.script_args.pop(i)
-
-
-class MyBuildExt(build_ext):
-    """
-    The companion to L{MyDistribution} that checks to see if building the
-    extensions are disabled.
-    """
-
-    def run(self, *args, **kwargs):
-        if self.distribution.disable_ext:
-            return
-
-        build_ext.run(self, *args, **kwargs)
-
-
-class MySDist(sdist.sdist):
-    """
-    We generate the Cython code for a source distribution
-    """
-
-    def cythonise(self):
-        ext = MyBuildExt(self.distribution)
-        ext.initialize_options()
-        ext.finalize_options()
-
-        ext.check_extensions_list(ext.extensions)
-
-        for e in ext.extensions:
-            e.sources = ext.cython_sources(e.sources, e)
-
-    def run(self):
-        if not have_cython:
-            print('ERROR - Cython is required to build source distributions')
-
-            raise SystemExit(1)
-
-        self.cythonise()
-
-        return sdist.sdist.run(self)
 
 
 def get_version():
@@ -186,11 +153,6 @@ def extra_setup_args():
     setup.py itself.
     """
     return {
-        'distclass': MyDistribution,
-        'cmdclass': {
-            'build_ext': MyBuildExt,
-            'sdist': MySDist
-        },
         'package_data': get_package_data(),
     }
 
