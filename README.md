@@ -18,16 +18,26 @@ If you want to make it fast, please send PR.
 This was tested on Ubuntu 16.04.2 and macOS 10.12.4
 
 To install, you can use pip3 on your environment. 
+
 ```
-pip3 install Py3AMF
+pip install py3amf
 ```
 
 Or, you can use setup.py to develop.
 ```
 git clone git@github.com:StdCarrot/Py3AMF.git
 cd Py3AMF
-# python3 setup.py test
-python3 setup.py install
+# pip install -e .[test] && pytest ./pyamf
+pip install -e .
+```
+
+The binary extension is compiled by default. To disable it, use the `PYAMF_DISABLE_EXT` env
+variable.
+
+```shell
+PYAMF_DISABLE_EXT=1 pip install py3amf
+# or
+PYAMF_DISABLE_EXT=1 pip install -e .
 ```
 
 ### Simple example
