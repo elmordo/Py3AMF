@@ -1,4 +1,4 @@
-from pyamf.remoting.client import RemotingService
+from src.pyamf.remoting import RemotingService
 
 client = RemotingService('https://demo.pyamf.org/gateway/authentication')
 client.setCredentials('jane', 'doe')

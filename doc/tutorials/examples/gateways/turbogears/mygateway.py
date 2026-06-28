@@ -1,6 +1,6 @@
 import logging
 
-from pyamf.remoting.gateway.wsgi import WSGIGateway
+from src.pyamf.remoting import WSGIGateway
 
 
 logging.basicConfig(

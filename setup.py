@@ -81,19 +81,19 @@ def get_binary_extensions() -> list[Extension]:
     extensions = [
         Extension(
             name="cpyamf.amf0",
-            sources=["cpyamf/amf0.pyx"]
+            sources=["src/cpyamf/amf0.pyx"]
         ),
         Extension(
             name="cpyamf.amf3",
-            sources=["cpyamf/amf3.pyx"]
+            sources=["src/cpyamf/amf3.pyx"]
         ),
         Extension(
             name="cpyamf.codec",
-            sources=["cpyamf/codec.pyx"]
+            sources=["src/cpyamf/codec.pyx"]
         ),
         Extension(
             name="cpyamf.util",
-            sources=["cpyamf/util.pyx"]
+            sources=["src/cpyamf/util.pyx"]
         ),
     ]
 
@@ -117,7 +117,7 @@ def get_version():
 
 def get_package_data():
     return {
-        'cpyamf': ['*.pxd'],
+        'src/cpyamf': ['*.pxd'],
     }
 
 
@@ -133,7 +133,7 @@ def extra_setup_args():
     }
 
 
-def write_version_py(filename='pyamf/_version.py'):
+def write_version_py(filename='src/pyamf/_version.py'):
     """
     """
     if os.path.exists(filename):

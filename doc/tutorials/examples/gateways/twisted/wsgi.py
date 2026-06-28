@@ -1,6 +1,6 @@
 import logging
 
-from pyamf.remoting.gateway.wsgi import WSGIGateway
+from src.pyamf.remoting import WSGIGateway
 from pyamf.remoting.gateway import expose_request
 
 from twisted.web import server
@@ -9,7 +9,7 @@ from twisted.python.threadpool import ThreadPool
 from twisted.internet import reactor
 from twisted.application import service, strports
 
-        
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s %(levelname)-5.5s [%(name)s] %(message)s'
@@ -35,15 +35,15 @@ class example:
 
 
 # A standalone function that can be bound to a service.
-def add(a, b): 
-    return a + b 
+def add(a, b):
+    return a + b
 
 
 # Create a dictionary mapping the service namespaces to a function
 # or class instance
-services = { 
+services = {
     'example': example(),
-    'myadd': add 
+    'myadd': add
 }
 
 # Create and start a thread pool,

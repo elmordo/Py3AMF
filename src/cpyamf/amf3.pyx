@@ -12,12 +12,10 @@ from libc.stdlib cimport malloc, free
 
 cimport cython
 
-from cpyamf.util cimport cBufferedByteStream, BufferedByteStream
+from cpyamf.util cimport cBufferedByteStream
 from cpyamf cimport codec
 import pyamf
 from pyamf import util, amf3, xml
-import types
-
 
 try:
     import zlib

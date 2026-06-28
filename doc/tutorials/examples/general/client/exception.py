@@ -1,4 +1,4 @@
->>> from pyamf.remoting.client import RemotingService
+>>> from src.pyamf.remoting import RemotingService
 >>> gateway = RemotingService('http://example.org/gw')
 >>> service = gateway.getService('type_error')
 >>> service()

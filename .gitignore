@@ -226,7 +226,7 @@ cpyamf/codec.pyd
 cpyamf/util.pyd
 dist
 file_model
-pyamf/_version.py
+src/pyamf/_version.py
 # coverage
 .coverage
 .noseids

@@ -1,4 +1,4 @@
-from pyamf.remoting.client import RemotingService
+from src.pyamf.remoting import RemotingService
 
 appName = 'MyApp/0.1.0'
 gateway = 'http://demo.pyamf.org/gateway/helloworld'

@@ -1,4 +1,4 @@
-from pyamf.remoting.gateway.wsgi import WSGIGateway
+from src.pyamf.remoting import WSGIGateway
 
 def echo(data):
    return data

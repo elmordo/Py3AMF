@@ -42,28 +42,33 @@ PYAMF_DISABLE_EXT=1 pip install -e .
 
 ### Simple example
 Everything is same with PyAMF, but you have to concern str and bytes types.
+
 ```python
 import pyamf
-from pyamf import remoting
+from src.pyamf import remoting
 from pyamf.flex import messaging
 import uuid
 import requests
 
-msg = messaging.RemotingMessage(operation='retrieveUser', 
-                                destination='so.stdc.flexact.common.User',
-                                messageId=str(uuid.uuid4()).upper(),
-                                body=['user_id'])
+msg = messaging.RemotingMessage(
+    operation='retrieveUser',
+    destination='so.stdc.flexact.common.User',
+    messageId=str(uuid.uuid4()).upper(),
+    body=['user_id']
+)
 req = remoting.Request(target='UserService', body=[msg])
-ev = remoting.Envelope(pyamf.AMF3)        
+ev = remoting.Envelope(pyamf.AMF3)
 ev['/0'] = req
 
 # Encode request 
 bin_msg = remoting.encode(ev)
 
 # Send request; You can use other channels like RTMP
-resp = requests.post('http://example.com/amf', 
-                     data=bin_msg.getvalue(), 
-                     headers={'Content-Type': 'application/x-amf'})
+resp = requests.post(
+    'http://example.com/amf',
+    data=bin_msg.getvalue(),
+    headers={'Content-Type': 'application/x-amf'}
+)
 
 # Decode response
 resp_msg = remoting.decode(resp.content)

@@ -1,7 +1,7 @@
-from pyamf.remoting.client import RemotingService
+from src.pyamf.remoting import RemotingService
 
 import logging
-        
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s %(levelname)-5.5s [%(name)s] %(message)s'
