@@ -1,9 +1,8 @@
 language: python
 python:
-  - "3.5"
-  - "3.6"
-  - "3.7"
-  - "3.8"
+  - "3.12"
+  - "3.13"
+  - "3.14"
 sudo: false
 
 cache:
@@ -44,14 +43,13 @@ matrix:
     #   env: GAESDK_VERSION=1.9.30
 
 install:
-   - pip install -r requirements.txt
    - pip install coverage coveralls
-   - pip install -e .
+   - pip install -e .[test]
    - ./install_optional_dependencies.sh
    - ./maybe_install_cython.sh
 
 script:
-  - coverage run --source=pyamf setup.py test
+  - coverage run --source=pyamf pytest ./pyamf
 
 after_success:
   - coveralls
