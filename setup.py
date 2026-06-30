@@ -7,7 +7,7 @@
 
 import os.path
 import platform
-from enum import Enum, auto
+from enum import Enum
 from os import environ
 
 from setuptools import setup, find_packages
