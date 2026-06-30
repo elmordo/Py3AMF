@@ -63,7 +63,8 @@ def setup_package():
     setup(
         version=get_version(),
         license=license,
-        packages=find_packages(),
+        package_dir={"": "src"},
+        packages=find_packages("src"),
         ext_modules=get_binary_extensions(),
         zip_safe=False,
         **extra_setup_args())
@@ -121,7 +122,7 @@ def get_version():
 
 def get_package_data():
     return {
-        'src/cpyamf': ['*.pxd'],
+        'cpyamf': ['*.pxd'],
     }
 
 
