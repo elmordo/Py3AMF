@@ -4,52 +4,36 @@
 
 .. topic:: Introduction
 
-   The Adapter Framework allows PyAMF to integrate nicely with other Python
-   libraries. This includes setting up type conversions, class mappings, etc.
+   The Adapter Framework contains helper modules for type conversions, class
+   mappings, and compatibility code. In Py3AMF 0.9.0 these modules are kept
+   for application-level reuse, but framework-specific automatic conversion is
+   not part of the officially supported surface.
 
 
 Adapters Overview
 =================
 
-We currently have adapters for the following libraries:
+Py3AMF includes helper modules for:
 
-- :doc:`../tutorials/gateways/django`
-- :doc:`../tutorials/gateways/appengine`
-- :doc:`../tutorials/gateways/sqlalchemy`
-- Elixir_
 - :py:mod:`sets` module
 - :py:mod:`decimal` module
+- legacy Django, Google App Engine, SQLAlchemy, and Elixir integrations
 
 
 How It Works
 ============
 
-The adapter framework works silently in the background. This means that the user
-does not need to specifically import the Django adapter module within PyAMF, it
-is all handled in the background. It works by adding a module loader and finder
-to :py:data:`sys.meta_path` so it can intercept import calls and) to fire a
-callback when, for example the ``django`` module is imported and accessed.
+The adapter framework can register import callbacks by adding a module loader
+and finder to :py:data:`sys.meta_path`. This allows helper code to be loaded
+when a matching module is imported and accessed.
 
-It is important to note that PyAMF does not load all the modules when
+It is important to note that Py3AMF does not load all the modules when
 registering its adapters and therefore it doesn't load modules that you
 don't use in your program.
 
-So, code like this works:
-
-.. code-block:: python
-
-   from django import http
-   import pyamf
-
-As well as:
-
-.. code-block:: python
-   
-   import pyamf
-   from django import http
-
-The adapter framework makes it easy to add other packages to the list, as PyAMF
-matures.
+Applications should not rely on Py3AMF to keep pace with major framework
+changes. Convert framework-specific objects into plain Python data at the
+application layer before encoding them with Py3AMF.
 
 
 Building Your Own Adapter
@@ -72,6 +56,3 @@ What next?
 ==========
 
 :doc:`Contributions</bugs>` (including unit tests) are always welcome!
-
-.. _Elixir: 		http://www.elixir.ematia.de
-.. _Contributions: 	http://pyamf.org/newticket

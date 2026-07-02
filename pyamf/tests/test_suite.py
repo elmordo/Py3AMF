@@ -29,8 +29,13 @@ class SupportedPythonVersionsTestCase(unittest.TestCase):
         'Framework :: Django',
         'Framework :: Pylons',
         'Framework :: Twisted',
+        'License :: OSI Approved :: MIT License',
         'Programming Language :: C',
         'Programming Language :: Cython',
+    )
+    deprecated_setup_keywords = (
+        'test_suite',
+        'tests_require',
     )
 
     def get_setup_classifiers(self):
@@ -66,6 +71,26 @@ class SupportedPythonVersionsTestCase(unittest.TestCase):
                     return ast.literal_eval(node.value)
 
         self.fail('setup.py does not define version')
+
+    def get_setup_call_keywords(self):
+        root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        setup_py = os.path.join(root, 'setup.py')
+
+        with open(setup_py, 'r') as fp:
+            tree = ast.parse(fp.read(), setup_py)
+
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+
+            if getattr(node.func, 'id', None) == 'setup':
+                return {
+                    keyword.arg
+                    for keyword in node.keywords
+                    if keyword.arg is not None
+                }
+
+        self.fail('setup.py does not call setup')
 
     def get_setup_extras(self):
         root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -133,6 +158,12 @@ class SupportedPythonVersionsTestCase(unittest.TestCase):
 
         for classifier in self.unsupported_classifiers:
             self.assertNotIn(classifier, classifiers)
+
+    def test_setup_excludes_deprecated_setuptools_test_keywords(self):
+        setup_keywords = self.get_setup_call_keywords()
+
+        for keyword in self.deprecated_setup_keywords:
+            self.assertNotIn(keyword, setup_keywords)
 
     def test_setup_extras_exclude_unsupported_integrations(self):
         self.assertEqual(

@@ -75,12 +75,12 @@ source_suffix = '.rst'
 #source_encoding = 'utf-8'
 
 # create content template for the homepage
-readme = rst2html('../README.txt', 'html/intro.html')
+readme = rst2html('../README.rst', 'html/intro.html')
 readme = copyfile('../CHANGES.txt', 'changelog.rst')
 
 # General substitutions.
-project = 'PyAMF'
-url = 'http://pyamf.org'
+project = 'Py3AMF'
+url = 'https://github.com/StdCarrot/Py3AMF'
 description = 'AMF for Python'
 
 if on_rtd == False:
@@ -185,10 +185,10 @@ html_use_modindex = True
 html_copy_source = False
 
 # Output an OpenSearch description file.
-html_use_opensearch = 'http://pyamf.org'
+html_use_opensearch = url
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pyamf' + release.replace('.', '')
+htmlhelp_basename = 'py3amf' + release.replace('.', '')
 
 # Split the index
 html_split_index = True
@@ -205,7 +205,7 @@ html_split_index = True
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'PyAMF.tex', html_title,
+  ('index', 'Py3AMF.tex', html_title,
    copyright, 'manual'),
 ]
 
@@ -234,21 +234,15 @@ latex_logo = 'html/static/logo.png'
 # Each key of this dictionary is a base url of an epydoc-generated
 # documentation. Each value is a list of regular expressions, the reference
 # target must match (see re.match()) to be cross-referenced with the base url.
-epydoc_mapping = {
-   # TODO: don't harcode version nr
-   'http://api.pyamf.org/0.6.1/': [r'pyamf\.'],
-}
+epydoc_mapping = {}
 
 # refer to the Python standard library.
-intersphinx_mapping = {'python': ('http://docs.python.org', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
 # A list of regular expressions that match URIs that should
 # not be checked when doing a 'make linkcheck' build (since Sphinx 1.1)
 linkcheck_ignore = [r'http://localhost:\d+/']
 
-# The base url of the Trac instance you want to create links to
-trac_url = 'http://dev.pyamf.org'
-
-# Trac url mapping
-extlinks = {'ticket': (trac_url + '/ticket/%s', '#')}
-
+# Legacy changelog entries use the ticket role. Link them to GitHub issues for
+# the current project infrastructure.
+extlinks = {'ticket': ('https://github.com/StdCarrot/Py3AMF/issues/%s', '#')}

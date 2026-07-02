@@ -21,7 +21,6 @@ license = "MIT License"
 classifiers = """
 Intended Audience :: Developers
 Intended Audience :: Information Technology
-License :: OSI Approved :: MIT License
 Natural Language :: English
 Operating System :: OS Independent
 Programming Language :: Python
@@ -58,8 +57,6 @@ def setup_package():
         packages=find_packages(),
         ext_modules=setupinfo.get_extensions(),
         install_requires=setupinfo.get_install_requirements(),
-        tests_require=setupinfo.get_test_requirements(),
-        test_suite="pyamf.tests.get_suite",
         zip_safe=False,
         extras_require=setupinfo.get_extras_require(),
         classifiers=(
