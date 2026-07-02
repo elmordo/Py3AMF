@@ -110,7 +110,20 @@ today_fmt = '%B %d, %Y'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['build', 'tutorials/examples']
+exclude_patterns = [
+    'build',
+    'tutorials/examples',
+    'tutorials/actionscript/addressbook.rst',
+    'tutorials/actionscript/bytearray.rst',
+    'tutorials/actionscript/guestbook.rst',
+    'tutorials/actionscript/recordset.rst',
+    'tutorials/actionscript/shell.rst',
+    'tutorials/actionscript/socket.rst',
+    'tutorials/actionscript/udp.rst',
+    'tutorials/apache/mod_python.rst',
+    'tutorials/gateways/*.rst',
+    'tutorials/jython/*.rst',
+]
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True

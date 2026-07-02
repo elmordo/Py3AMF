@@ -231,6 +231,40 @@ class DefaultSuiteTestCase(unittest.TestCase):
         )
 
 
+class TutorialDocumentationTestCase(unittest.TestCase):
+    unsupported_terms = (
+        'appengine',
+        'django',
+        'elixir',
+        'google app engine',
+        'jython',
+        'mod_python',
+        'pylons',
+        'sqlalchemy',
+        'turbogears',
+        'twisted',
+        'web2py',
+    )
+    navigation_files = (
+        'doc/tutorials/index.rst',
+        'doc/tutorials/actionscript/index.rst',
+        'doc/tutorials/apache/index.rst',
+        'doc/html/tutorials.html',
+    )
+
+    def test_tutorial_navigation_excludes_unsupported_integrations(self):
+        root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+
+        for filename in self.navigation_files:
+            path = os.path.join(root, filename)
+
+            with open(path, 'r') as fp:
+                content = fp.read().lower()
+
+            for term in self.unsupported_terms:
+                self.assertNotIn(term, content, filename)
+
+
 class MainTestCase(unittest.TestCase):
     def test_main_exits_non_zero_when_suite_fails(self):
         code = """
