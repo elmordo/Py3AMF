@@ -1,0 +1,3 @@
+# Requirements for running the complete supported test suite.
+-r requirements.txt
+lxml>=6.1.1

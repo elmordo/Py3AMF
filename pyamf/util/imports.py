@@ -7,6 +7,8 @@ Tools for doing dynamic imports.
 @since: 0.3
 """
 
+import importlib.abc
+import importlib.util
 import sys
 
 
@@ -30,7 +32,39 @@ def when_imported(name, *hooks):
     finder.when_imported(name, *hooks)
 
 
-class ModuleFinder(object):
+class ModuleLoader(importlib.abc.Loader):
+    """
+    Loader wrapper that runs post-import hooks after the real loader.
+    """
+
+    def __init__(self, finder, name, loader):
+        self.finder = finder
+        self.name = name
+        self.loader = loader
+
+    def create_module(self, spec):
+        if hasattr(self.loader, 'create_module'):
+            return self.loader.create_module(spec)
+
+        return None
+
+    def exec_module(self, module):
+        try:
+            if hasattr(self.loader, 'exec_module'):
+                self.loader.exec_module(module)
+            else:
+                loaded = self.loader.load_module(self.name)
+
+                if loaded is not module:
+                    module.__dict__.update(loaded.__dict__)
+
+            self.finder._run_hooks(self.name, module)
+        except:
+            self.finder._remove_loaded(self.name)
+            raise
+
+
+class ModuleFinder(importlib.abc.MetaPathFinder):
     """
     This is a special module finder object that executes a collection of
     callables when a specific module has been imported. An instance of this
@@ -48,6 +82,55 @@ class ModuleFinder(object):
     def __init__(self):
         self.post_load_hooks = {}
         self.loaded_modules = []
+
+    def find_spec(self, name, path=None, target=None):
+        """
+        Called when an import is made. If hooks are waiting for this module,
+        wrap the real loader and run the hooks after module execution.
+
+        @param name: The name of the module being imported.
+        @param path: The root path of the module, if importing from a package.
+        @param target: Existing module object during reloads.
+        @return: A wrapped module spec, or C{None} to continue normal import.
+        """
+        if name in self.loaded_modules:
+            return None
+
+        hooks = self.post_load_hooks.get(name, None)
+
+        if not hooks:
+            return None
+
+        self.loaded_modules.append(name)
+
+        spec = self._find_wrapped_spec(name)
+
+        if spec is None or spec.loader is None:
+            self._remove_loaded(name)
+            return None
+
+        spec.loader = ModuleLoader(self, name, spec.loader)
+
+        return spec
+
+    def _find_wrapped_spec(self, name):
+        """
+        Find the real module spec without recursively invoking this finder.
+        """
+        meta_path = sys.meta_path[:]
+
+        try:
+            sys.meta_path.remove(self)
+        except ValueError:
+            pass
+
+        try:
+            return importlib.util.find_spec(name)
+        except:
+            self._remove_loaded(name)
+            raise
+        finally:
+            sys.meta_path[:] = meta_path
 
     def find_module(self, name, path=None):
         """
@@ -112,6 +195,12 @@ class ModuleFinder(object):
 
         for hook in hooks:
             hook(module)
+
+    def _remove_loaded(self, name):
+        try:
+            self.loaded_modules.remove(name)
+        except ValueError:
+            pass
 
     def __getstate__(self):
         return (self.post_load_hooks.copy(), self.loaded_modules[:])

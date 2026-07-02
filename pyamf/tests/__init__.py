@@ -14,6 +14,7 @@ try:
     sys.modules['unittest'] = unittest
 except ImportError:
     import unittest
+    import sys
 
 
 SUPPORTED_PYTHON_VERSIONS = ((3, 11), (3, 12), (3, 13), (3, 14))
@@ -163,7 +164,9 @@ def main():
     Run all of the tests when run as a module with -m.
     """
     runner = unittest.TextTestRunner()
-    runner.run(get_suite())
+    result = runner.run(get_suite())
+
+    sys.exit(not result.wasSuccessful())
 
 
 if __name__ == '__main__':

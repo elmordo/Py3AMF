@@ -7,6 +7,9 @@ Tests for the project test suite entry point.
 
 import ast
 import os.path
+import subprocess
+import sys
+import textwrap
 import unittest
 
 import pyamf.tests
@@ -103,3 +106,27 @@ class DefaultSuiteTestCase(unittest.TestCase):
                 for test_id in test_ids
             )
         )
+
+
+class MainTestCase(unittest.TestCase):
+    def test_main_exits_non_zero_when_suite_fails(self):
+        code = """
+import unittest
+import pyamf.tests
+
+class FailingTestCase(unittest.TestCase):
+    def test_failure(self):
+        self.fail('expected failure')
+
+pyamf.tests.get_suite = lambda: unittest.TestLoader().loadTestsFromTestCase(
+    FailingTestCase
+)
+pyamf.tests.main()
+"""
+        result = subprocess.run(
+            [sys.executable, '-c', textwrap.dedent(code)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+
+        self.assertNotEqual(result.returncode, 0)

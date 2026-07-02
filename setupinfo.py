@@ -138,7 +138,7 @@ def get_extras_require():
         'django': ['Django>=0.96'],
         'sqlalchemy': ['SQLAlchemy>=0.4'],
         'elixir': ['Elixir>=0.7.1'],
-        'lxml': ['lxml>=4.4.0'],
+        'lxml': ['lxml>=6.1.1'],
         'six': ['six>=1.10.0']
     }
 
@@ -172,7 +172,7 @@ def get_install_requirements():
     Returns a list of dependencies for PyAMF to function correctly on the
     target platform.
     """
-    install_requires = ['defusedxml']
+    install_requires = ['defusedxml>=0.7.1']
 
     if 'dev' in get_version():
         if can_compile_extensions:
