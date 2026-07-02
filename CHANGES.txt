@@ -5,6 +5,22 @@ This document contains information about the changes between the different
 versions of PyAMF.
 
 .. contents::
+0.9.0 (unreleased)
+------------------
+- Plan to test CPython 3.11 through 3.14 while avoiding artificial
+  installation blocks for older Python 3 versions.
+- Keep the pure Python AMF0 and AMF3 implementation as the supported runtime
+  path.
+- Keep the WSGI gateway as the only supported core gateway.
+- Drop official support for Jython and Cython extension builds. Existing
+  Cython sources remain in the source tree for compatibility and reference.
+- Drop official support for Twisted, Django, and Google App Engine gateway
+  integrations.
+- Drop official support for Django, SQLAlchemy, Elixir, and Google App Engine
+  adapter integrations. Existing adapter modules remain available as helper
+  and legacy modules, but framework-specific object conversion should happen
+  at the application layer.
+
 0.8.12 (2024-01-23)
 ----------------
 - Support dictionary
