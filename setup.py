@@ -4,6 +4,11 @@
 # See LICENSE.txt for details.
 
 # import ordering is important
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 import setupinfo
 from setuptools import setup, find_packages
 
@@ -49,10 +54,11 @@ def setup_package():
         version=setupinfo.get_version(),
         description=description,
         long_description=long_description,
+        long_description_content_type="text/x-rst",
         url=url,
         author=author,
         author_email=author_email,
-        keywords=keywords.strip(),
+        keywords=' '.join(keywords.split()),
         license=license,
         packages=find_packages(),
         ext_modules=setupinfo.get_extensions(),

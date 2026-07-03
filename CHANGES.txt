@@ -27,6 +27,8 @@ versions of Py3AMF.
   ``test-requirements.txt``.
 - Remove deprecated setuptools ``test_suite`` and ``tests_require`` metadata,
   and remove the deprecated license classifier.
+- Add PEP 517 build metadata and fix source distribution metadata so runtime
+  dependencies are installed correctly from both wheels and sdists.
 - Add GitHub Actions coverage for the supported CPython 3.11 through 3.14
   test matrix.
 - Refresh installation, architecture, community, and tutorial documentation to

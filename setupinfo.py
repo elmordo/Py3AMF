@@ -20,8 +20,7 @@ except ImportError:
 
 
 from setuptools.command import sdist
-from setuptools import Extension
-from distutils.core import Distribution
+from setuptools import Distribution, Extension
 
 
 _version = None
@@ -69,7 +68,8 @@ class MyBuildExt(build_ext):
 
 class MySDist(sdist.sdist):
     """
-    We generate the Cython code for a source distribution
+    Generate Cython code for source distributions only when extensions are
+    enabled.
     """
 
     def cythonise(self):
@@ -83,12 +83,13 @@ class MySDist(sdist.sdist):
             e.sources = ext.cython_sources(e.sources, e)
 
     def run(self):
-        if not have_cython:
+        if self.distribution.ext_modules and not have_cython:
             print('ERROR - Cython is required to build source distributions')
 
             raise SystemExit(1)
 
-        self.cythonise()
+        if self.distribution.ext_modules:
+            self.cythonise()
 
         return sdist.sdist.run(self)
 
@@ -123,6 +124,7 @@ def get_extras_require():
 def get_package_data():
     return {
         'cpyamf': ['*.pxd'],
+        'pyamf.tests': ['imports/*.py'],
     }
 
 

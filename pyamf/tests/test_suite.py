@@ -38,8 +38,16 @@ class SupportedPythonVersionsTestCase(unittest.TestCase):
         'tests_require',
     )
 
-    def get_setup_classifiers(self):
+    def get_source_root(self):
         root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+
+        if not os.path.exists(os.path.join(root, 'setup.py')):
+            self.skipTest('source checkout metadata is not installed')
+
+        return root
+
+    def get_setup_classifiers(self):
+        root = self.get_source_root()
         setup_py = os.path.join(root, 'setup.py')
 
         with open(setup_py, 'r') as fp:
@@ -56,7 +64,7 @@ class SupportedPythonVersionsTestCase(unittest.TestCase):
         self.fail('setup.py does not define classifiers')
 
     def get_setup_version(self):
-        root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        root = self.get_source_root()
         setup_py = os.path.join(root, 'setup.py')
 
         with open(setup_py, 'r') as fp:
@@ -73,7 +81,7 @@ class SupportedPythonVersionsTestCase(unittest.TestCase):
         self.fail('setup.py does not define version')
 
     def get_setup_call_keywords(self):
-        root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        root = self.get_source_root()
         setup_py = os.path.join(root, 'setup.py')
 
         with open(setup_py, 'r') as fp:
@@ -93,7 +101,7 @@ class SupportedPythonVersionsTestCase(unittest.TestCase):
         self.fail('setup.py does not call setup')
 
     def get_setup_extras(self):
-        root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        root = self.get_source_root()
         setupinfo_py = os.path.join(root, 'setupinfo.py')
 
         with open(setupinfo_py, 'r') as fp:
@@ -113,7 +121,7 @@ class SupportedPythonVersionsTestCase(unittest.TestCase):
         self.fail('setupinfo.py does not define get_extras_require')
 
     def get_setupinfo_function(self, name):
-        root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        root = self.get_source_root()
         setupinfo_py = os.path.join(root, 'setupinfo.py')
 
         with open(setupinfo_py, 'r') as fp:
@@ -257,6 +265,9 @@ class TutorialDocumentationTestCase(unittest.TestCase):
 
         for filename in self.navigation_files:
             path = os.path.join(root, filename)
+
+            if not os.path.exists(path):
+                self.skipTest('source checkout documentation is not installed')
 
             with open(path, 'r') as fp:
                 content = fp.read().lower()
