@@ -457,6 +457,30 @@ class DataTypeMixIn(object):
         if not type(d) is float:
             raise TypeError('expected a float (got:%r)' % (type(d),))
 
+        if python.isNaN(d):
+            if self._is_big_endian():
+                self.write(b'\xff\xf8\x00\x00\x00\x00\x00\x00')
+            else:
+                self.write(b'\x00\x00\x00\x00\x00\x00\xf8\xff')
+
+            return
+
+        if python.isNegInf(d):
+            if self._is_big_endian():
+                self.write(b'\xff\xf0\x00\x00\x00\x00\x00\x00')
+            else:
+                self.write(b'\x00\x00\x00\x00\x00\x00\xf0\xff')
+
+            return
+
+        if python.isPosInf(d):
+            if self._is_big_endian():
+                self.write(b'\x7f\xf0\x00\x00\x00\x00\x00\x00')
+            else:
+                self.write(b'\x00\x00\x00\x00\x00\x00\xf0\x7f')
+
+            return
+
         self.write(struct.pack("%sd" % self.endian, d))
 
     def read_float(self):

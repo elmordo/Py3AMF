@@ -5,7 +5,7 @@
 .. topic:: Introduction
 
    This document explains how to have more fine grain control over what
-   gets encoded by PyAMF 0.5 and newer.
+   gets encoded by Py3AMF.
 
 .. contents::
 
@@ -16,13 +16,14 @@ A simple example is that of a user object. This ``User`` class has
 ``username`` and ``password`` attributes as well a number of meta
 properties.
 
-We are going to use the Google App Engine adapter for this example,
-but the ideas apply in all situations.
+This legacy example uses Google App Engine-style models, but the ideas apply
+in all situations. Py3AMF 0.9.0 no longer officially supports automatic Google
+App Engine adapter integration.
 
 .. literalinclude:: examples/attribute-control/models1.py
    :linenos:
 
-This class is used in a (theoretical) PyAMF application to represent
+This class is used in a (theoretical) Py3AMF application to represent
 ``User`` objects through a gateway:
 
 .. literalinclude:: examples/attribute-control/server.py
@@ -33,7 +34,7 @@ Loading Users
 -------------
 
 Lets examine ``getUsers``. Assuming that ``User.all()`` worked as expected
-a list of ``User`` objects would be returned to PyAMF for encoding which
+a list of ``User`` objects would be returned to Py3AMF for encoding which
 is the expected behaviour. What is not the desired behaviour is that the
 ``password`` attribute will be encoded with each ``User`` object, thereby
 handing all user passwords out to whomever desires them. Definitely **not**
@@ -43,7 +44,7 @@ attribute from each ``User`` object as it is encoded.
 .. literalinclude:: examples/attribute-control/models2.py
    :linenos:
 
-Notice the class attribute ``__amf__``. PyAMF looks for attributes on the
+Notice the class attribute ``__amf__``. Py3AMF looks for attributes on the
 object class that contain instructions on how to handle encoding and
 decoding instances.
 
@@ -57,7 +58,7 @@ Saving a User
 -------------
 
 The first argument of the ``UserService.saveUser`` method is a ``User`` object
-that has been decoded by PyAMF and applied to the service method. Some type
+that has been decoded by Py3AMF and applied to the service method. Some type
 checking might be in order here, because anything could be sent as the ``user``
 payload.
 
@@ -73,8 +74,8 @@ payload.
 So now we can ensure that any call to ``user.put`` will be an instance
 (or subclass) of ``User``. Since we plan to persist the ``User`` object,
 some validation is in order. If the correct attribute (``_key``) is sent
-to PyAMF, the GAE Adapter will load the instance from the datastore and it
-then applies the object attributes on top of this instance. This means that
+to application code, that code should load the instance from the datastore and
+then apply the object attributes on top of this instance. This means that
 if the ``_key`` is known to a malicious hacker, a malformed client request
 could attempt to change the ``username`` property (or indeed change any
 other property on the model). The same thing could apply to the ``password``
@@ -139,7 +140,7 @@ IExternalizable
 AMF provides the opportunity for the developer to customise the
 (de)serialisation of instances through the implementation of
 ``IExternalizable`` (once again, plenty of docs and tuts on the web).
-PyAMF makes no exception.
+Py3AMF makes no exception.
 
 To implement ``IExternalizable``:
 
@@ -160,7 +161,7 @@ Extending our ``User`` class from above:
    :linenos:
 
 Notice the new `dynamic` property in the `__amf__` meta declaration. This
-instructs PyAMF to create an aggregated whitelist of attributes based on the
+instructs Py3AMF to create an aggregated whitelist of attributes based on the
 class and other instructions (as defined above) and restrict the encodable
 and decodable attributes to within that list. Any attribute that is on the
 instance that is not on the list is ignored.

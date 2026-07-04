@@ -8,7 +8,6 @@ Meta data and helper functions for setup
 import fnmatch
 import os.path
 import platform
-import sys
 
 try:
     from Cython.Distutils import build_ext
@@ -20,9 +19,8 @@ except ImportError:
     have_cython = False
 
 
-from setuptools.command import test, sdist
-from setuptools import Extension
-from distutils.core import Distribution
+from setuptools.command import sdist
+from setuptools import Distribution, Extension
 
 
 _version = None
@@ -70,7 +68,8 @@ class MyBuildExt(build_ext):
 
 class MySDist(sdist.sdist):
     """
-    We generate the Cython code for a source distribution
+    Generate Cython code for source distributions only when extensions are
+    enabled.
     """
 
     def cythonise(self):
@@ -84,31 +83,15 @@ class MySDist(sdist.sdist):
             e.sources = ext.cython_sources(e.sources, e)
 
     def run(self):
-        if not have_cython:
+        if self.distribution.ext_modules and not have_cython:
             print('ERROR - Cython is required to build source distributions')
 
             raise SystemExit(1)
 
-        self.cythonise()
+        if self.distribution.ext_modules:
+            self.cythonise()
 
         return sdist.sdist.run(self)
-
-
-class TestCommand(test.test):
-    """
-    Ensures that unittest2 is imported if required and replaces the old
-    unittest module.
-    """
-
-    def run_tests(self):
-        try:
-            import unittest2
-
-            sys.modules['unittest'] = unittest2
-        except ImportError:
-            pass
-
-        return test.test.run_tests(self)
 
 
 def set_version(version):
@@ -134,18 +117,14 @@ def get_version():
 
 def get_extras_require():
     return {
-        'twisted': ['Twisted>=16.0.0'],
-        'django': ['Django>=0.96'],
-        'sqlalchemy': ['SQLAlchemy>=0.4'],
-        'elixir': ['Elixir>=0.7.1'],
-        'lxml': ['lxml>=4.4.0'],
-        'six': ['six>=1.10.0']
+        'lxml': ['lxml>=6.1.1']
     }
 
 
 def get_package_data():
     return {
         'cpyamf': ['*.pxd'],
+        'pyamf.tests': ['imports/*.py'],
     }
 
 
@@ -159,7 +138,6 @@ def extra_setup_args():
     return {
         'distclass': MyDistribution,
         'cmdclass': {
-            'test': TestCommand,
             'build_ext': MyBuildExt,
             'sdist': MySDist
         },
@@ -172,22 +150,9 @@ def get_install_requirements():
     Returns a list of dependencies for PyAMF to function correctly on the
     target platform.
     """
-    install_requires = ['defusedxml']
-
-    if 'dev' in get_version():
-        if can_compile_extensions:
-            install_requires.extend(['Cython>=0.28'])
+    install_requires = ['defusedxml>=0.7.1']
 
     return install_requires
-
-
-def get_test_requirements():
-    """
-    Returns a list of required packages to run the test suite.
-    """
-    tests_require = []
-
-    return tests_require
 
 
 def write_version_py(filename='pyamf/_version.py'):
@@ -235,38 +200,19 @@ def make_extension(mod_name, **extra_options):
 
 
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    with open(os.path.join(os.path.dirname(__file__), fname)) as fp:
+        return fp.read()
 
 
 def get_extensions():
     """
-    Return a list of Extension instances that can be compiled.
+    Return extension modules to build.
+
+    C extension builds are intentionally disabled for the supported 0.9.0
+    runtime surface. The Cython sources remain in the tree for reference and
+    compatibility, but installs should always use the pure Python path.
     """
-    if not can_compile_extensions:
-        # due to changes in pip these prints have no effect
-        print(80 * '*')
-        print('WARNING:')
-        print(
-            '\tAn optional code optimization (C extension) could not be '
-            'compiled.\n\n'
-        )
-        print('\tOptimizations for this package will not be available!\n\n')
-        print('Compiling extensions is not supported on %r' % (sys.platform,))
-        print(80 * '*')
-
-        return []
-
-    extensions = []
-
-    for p in recursive_glob('.', '*.pyx'):
-        mod_name = os.path.splitext(p)[0].replace(os.path.sep, '.')
-
-        e = make_extension(mod_name)
-
-        if e:
-            extensions.append(e)
-
-    return extensions
+    return []
 
 
 def get_trove_classifiers():

@@ -1,48 +1,50 @@
 Py3AMF
 ======
 
-Py3AMF is fork of `PyAMF <https://github.com/hydralabs/pyamf>`__ to
-support Python3
+Py3AMF is a Python 3 fork of
+`PyAMF <https://github.com/hydralabs/pyamf>`__. It provides Action
+Message Format (AMF0 and AMF3) encoding, decoding, and remoting support
+for Python applications.
 
-Why Py3AMF
-~~~~~~~~~~
+Current support
+~~~~~~~~~~~~~~~
 
-By states of issues and PR in
-`PyAMF <https://github.com/hydralabs/pyamf>`__, it dosen’t seems to be
-under developing. And another PR that supports Py3 has been discontinued
-for over two years. This is the only Python AMF Project which trying to
-support Py3 under developing on GitHub.
+The 0.9.0 release line keeps the supported surface small and focused:
 
-State
-~~~~~
+- CPython 3.11, 3.12, 3.13, and 3.14 are tested with the
+  ``python:3.11-slim``, ``python:3.12-slim``, ``python:3.13-slim``, and
+  ``python:3.14-slim`` container images.
+- Older Python 3 versions are not intentionally blocked, but they are not
+  part of the active test matrix.
+- AMF0, AMF3, core remoting, the WSGI gateway, and pure Python runtime
+  code are supported.
+- ``pyamf.adapters`` remains available as helper and compatibility
+  modules.
+- Jython, Cython extension builds, framework gateways, and automatic
+  conversion of third-party framework models are no longer officially
+  supported.
 
-Pass ``setup.py test`` But, adapters were not tested
-
-Warning
-~~~~~~~
-
-This project isn’t completed. If you want to make it fast, please send
-PR.
+Applications should convert framework-specific objects at the application
+layer before passing data to Py3AMF.
 
 Install
 ~~~~~~~
 
-This was tested on Ubuntu 16.04.2 and macOS 10.12.4
-
-To install, you can use pip3 on your environment.
+Install the released package with pip:
 
 ::
 
-   pip3 install Py3AMF
+   python -m pip install Py3AMF
 
-Or, you can use setup.py to develop.
+For local development:
 
 ::
 
    git clone git@github.com:StdCarrot/Py3AMF.git
    cd Py3AMF
-   # python3 setup.py test
-   python3 setup.py install
+   python -m pip install -r test-requirements.txt
+   python -c "import pyamf.tests; pyamf.tests.main()"
+   python -m pip install .
 
 Simple example
 ~~~~~~~~~~~~~~
@@ -78,23 +80,13 @@ types.
    resp_msg = remoting.decode(resp.content)
    print(resp_msg.bodies)
 
-TODO
-----
-
--  Check adapters
-
 --------------
 
-`PyAMF <http://www.pyamf.org>`__ provides Action Message Format
-(`AMF <http://en.wikipedia.org/wiki/Action_Message_Format>`__) support
-for `Python <http://python.org>`__ that is compatible with the `Adobe
-Flash Player <http://en.wikipedia.org/wiki/Flash_Player>`__. It includes
-integration with Python web frameworks like
-`Django <http://djangoproject.com>`__, `Pylons <http://pylonshq.com>`__,
-`Twisted <http://twistedmatrix.com>`__,
-`SQLAlchemy <http://sqlalchemy.org>`__,
-`web2py <http://www.web2py.com>`__ and
-`more <http://pyamf.org/tutorials/index.html>`__.
+`Action Message Format
+<http://en.wikipedia.org/wiki/Action_Message_Format>`__ is a compact
+binary format used by Adobe Flash Player and Adobe AIR applications.
+Py3AMF keeps the AMF codec and WSGI remoting pieces current for modern
+Python 3 runtimes.
 
 The `Adobe Integrated
 Runtime <http://en.wikipedia.org/wiki/Adobe_AIR>`__ and `Adobe Flash
@@ -107,13 +99,9 @@ protocol. Objects and data values are serialized into this binary
 format, which increases performance, allowing applications to load data
 up to 10 times faster than with text-based formats such as XML or SOAP.
 
-AMF3, the default serialization for
-`ActionScript <http://dev.pyamf.org/wiki/ActionScript>`__ 3.0, provides
-various advantages over AMF0, which is used for ActionScript 1.0 and
-2.0. AMF3 sends data over the network more efficiently than AMF0. AMF3
-supports sending ``int`` and ``uint`` objects as integers and supports
-data types that are available only in ActionScript 3.0, such as
-`ByteArray <http://dev.pyamf.org/wiki/ByteArray>`__,
-`ArrayCollection <http://dev.pyamf.org/wiki/ArrayCollection>`__,
-`ObjectProxy <http://dev.pyamf.org/wiki/ObjectProxy>`__ and
-`IExternalizable <http://dev.pyamf.org/wiki/IExternalizable>`__.
+AMF3, the default serialization for ActionScript 3.0, provides various
+advantages over AMF0, which is used for ActionScript 1.0 and 2.0. AMF3
+sends data over the network more efficiently than AMF0. AMF3 supports
+sending ``int`` and ``uint`` objects as integers and supports data types
+that are available only in ActionScript 3.0, such as ``ByteArray``,
+``ArrayCollection``, ``ObjectProxy``, and ``IExternalizable``.

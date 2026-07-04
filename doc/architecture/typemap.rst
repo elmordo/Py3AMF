@@ -20,7 +20,7 @@ The following types are available in Adobe Flash Player 6 and newer:
 +-------------------------------------+---------------------------------------------+
 | ``undefined``, ``void``             | `pyamf.Undefined`                           |
 +-------------------------------------+---------------------------------------------+
-| ``String``     	              | ``unicode``                                 |
+| ``String``     	              | ``str``                                     |
 +-------------------------------------+---------------------------------------------+
 | ``Boolean``                         | ``bool``                                    |
 +-------------------------------------+---------------------------------------------+
@@ -92,8 +92,4 @@ The following types are available in `Adobe Flex`_ 2 and newer:
 | ``DataErrorMessage``                | :class:`pyamf.flex.data.DataErrorMessage`         |
 +-------------------------------------+---------------------------------------------------+
 
-**Note**: We plan to deprecate and move the Flex support into a new project_ before PyAMF 1.0 is released.
-
-
 .. _Adobe Flex: http://opensource.adobe.com/wiki/display/flexsdk
-.. _project: http://plasmads.org
