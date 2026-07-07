@@ -2,9 +2,42 @@ Changelog
 =========
 
 This document contains information about the changes between the different
-versions of PyAMF.
+versions of Py3AMF.
 
 .. contents::
+0.9.0 (2026-07-03)
+------------------
+- Test CPython 3.11 through 3.14 while keeping installation open for older
+  Python 3 versions where possible.
+- Keep AMF0, AMF3, core remoting, the WSGI gateway, and the pure Python
+  runtime path as the supported 0.9.0 surface.
+- Keep ``pyamf.adapters`` helper modules available, while removing legacy
+  framework adapter and gateway tests from the default suite.
+- Drop official support for Jython and Cython extension builds. Existing
+  Cython sources remain in the source tree for compatibility and reference,
+  but Cython is no longer installed as a development dependency and extension
+  builds are disabled during installation.
+- Drop official support for Twisted, Django, and Google App Engine gateway
+  integrations.
+- Drop official support for Django, SQLAlchemy, Elixir, and Google App Engine
+  adapter integrations. Existing adapter modules remain available as helper
+  and legacy modules, but framework-specific object conversion should happen
+  at the application layer.
+- Split runtime and full test dependencies into ``requirements.txt`` and
+  ``test-requirements.txt``.
+- Remove deprecated setuptools ``test_suite`` and ``tests_require`` metadata,
+  and remove the deprecated license classifier.
+- Add PEP 517 build metadata and fix source distribution metadata so runtime
+  dependencies are installed correctly from both wheels and sdists.
+- Add GitHub Actions coverage for the supported CPython 3.11 through 3.14
+  test matrix.
+- Refresh installation, architecture, community, and tutorial documentation to
+  advertise only the supported 0.9.0 runtime surface.
+
+0.8.12 (2024-01-23)
+----------------
+- Support dictionary
+
 0.8.11 (2022-02-25)
 ----------------
 - Change str to binary 

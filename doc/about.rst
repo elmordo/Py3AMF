@@ -7,12 +7,10 @@ These documents are generated from `reStructuredText
 <http://sphinx.pocoo.org>`_, a document processor
 specifically written for the official Python documentation.
 
-In the online version of these documents, you can submit comments and
-suggest changes directly on the documentation pages.
+Documentation changes are handled through the Py3AMF GitHub repository:
+https://github.com/StdCarrot/Py3AMF.
 
-Development of the documentation takes place on the
-:doc:`users mailing list <community/mailinglist>`. We're
-always looking for volunteers wanting to help with the docs, so feel
-free to send a mail there!
+Pull requests that improve current installation, compatibility, and API
+documentation are welcome.
 
-See :ref:`reporting-bugs` for information how to report bugs in PyAMF.
+See :ref:`reporting-bugs` for information how to report bugs in Py3AMF.

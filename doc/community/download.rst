@@ -4,42 +4,37 @@
 
 .. contents::
 
-PyAMF is released under the :doc:`MIT license <../license>`. For installation
+Py3AMF is released under the :doc:`MIT license <../license>`. For installation
 instructions, see the included :doc:`Installation Guide <../install>`.
 
 
-Latest Stable Release - 0.6.1
-=============================
+Released Package
+================
 
-:doc:`../whatsnew/0.6`
+The released Py3AMF package is available from PyPI_::
 
-+-----------------+-----------------------------------+
-| **Gzipped Tar** | `PyAMF-0.6.1.tar.gz`_             |
-+-----------------+-----------------------------------+
+    python -m pip install Py3AMF
 
 Latest Development Source Code
 ==============================
 
-The Git_ repository URL for the PyAMF project is at
-http://github.com/hydralabs/pyamf.
+The Git_ repository URL for the Py3AMF project is:
+https://github.com/StdCarrot/Py3AMF.
 
-The latest revision of PyAMF can be checked out with the
+The latest revision of Py3AMF can be checked out with the
 following command::
 
-    git clone git://github.com/hydralabs/pyamf.git
+    git clone https://github.com/StdCarrot/Py3AMF.git
 
 For installing this development version::
 
-    cd pyamf
-    python setup.py develop
+    cd Py3AMF
+    python -m pip install .
 
 Older releases
 ==============
 
-Older releases are archived on http://pypi.python.org/packages/source/P/PyAMF/.
-
-Each release is also tagged:
-http://github.com/hydralabs/pyamf/downloads.
+Older Py3AMF releases are available from PyPI_ and repository tags.
 
 .. _Git: 		http://git-scm.com/
-.. _PyAMF-0.6.1.tar.gz:	http://pypi.python.org/packages/source/P/PyAMF/PyAMF-0.6.1.tar.gz
+.. _PyPI:              https://pypi.org/project/Py3AMF/

@@ -4,129 +4,72 @@
 
 .. contents::
 
-PyAMF requires Python_ 2.4 or newer. Python 3.0 isn't supported.
+Py3AMF 0.9.0 is a Python 3 package. CPython 3.11, 3.12, 3.13, and
+3.14 are tested. Older Python 3 versions are not intentionally blocked,
+but they are outside the active test matrix.
 
 
 Easy Installation
 =================
 
-Pretty simple::
+Install the released package with pip_::
 
-    pip install pyamf
+    python -m pip install Py3AMF
+
+The runtime dependency set is intentionally small. To install the runtime
+dependencies from a source checkout::
+
+    python -m pip install -r requirements.txt
 
 
 Manual Installation
 ===================
 
-To use PyAMF with Python 2.4, the following software packages
-must be installed. You **don't** need these packages if you're using
-Python 2.5 or newer!
+:doc:`community/download` and unpack the Py3AMF archive of your choice::
 
-The ``easy_install`` command will automatically install them for you, as
-described above, but you can also choose to download and install the packages
-manually.
+    tar zxfv Py3AMF-<version>.tar.gz
+    cd Py3AMF-<version>
 
-- ElementTree_ 1.2.6 or newer
-- uuid_ 1.30 or newer
+Install the package from the source directory::
 
-Step 1
-------
-
-:doc:`community/download` and unpack the PyAMF archive of your choice::
-
-    tar zxfv PyAMF-<version>.tar.gz
-    cd PyAMF-<version>
-
-
-Step 2
-------
-
-Run the Python-typical setup at the top of the source directory
-from a command-prompt::
-
-    python setup.py install
-
-This will byte-compile the Python source code and install it in the
-``site-packages`` directory of your Python installation.
-
-Note: to disable the installation of the C-extension, supply the
-``--disable-ext`` option::
-
-    python setup.py install --disable-ext
-
-
-Debian GNU/Linux
-================
-
-Packaged as `python-pyamf`_::
-
-	apt-get install python-pyamf
-
-`Note: you might need root permissions or equivalent for this step.`
+    python -m pip install .
 
 
 Optional Extras
 ===============
 
-PyAMF integrates with the following optional third-party Python
-libraries:
+The only optional extra advertised by Py3AMF 0.9.0 is lxml_ support for
+XML handling::
 
-- wsgiref_ 0.1.2 or newer (included in Python 2.5 and newer)
-- cElementTree_ 1.0.5 or newer (included in Python 2.5 and newer)
-- lxml_ 2.2 or newer
-- SQLAlchemy_ 0.4 or newer
-- Twisted_ 2.5 or newer
-- Django_ 0.97 or newer
-- `Google App Engine`_ 1.0 or newer
-- Elixir_ 0.7.1 or newer
+    python -m pip install "Py3AMF[lxml]"
+
+For source checkouts, the full test dependency set is listed in
+``test-requirements.txt`` and includes lxml_.
+
+Py3AMF 0.9.0 no longer officially supports framework integration
+packages for Django, Twisted, Google App Engine, SQLAlchemy, or Elixir.
+Existing adapter and gateway modules remain in the source tree for
+compatibility and application-level reuse, but framework-specific object
+conversion should happen in application code before values are passed to
+Py3AMF.
+
+Cython extension builds are also no longer supported. The Cython sources
+remain in the tree for reference and compatibility, but installation uses
+the pure Python runtime path.
 
 
 Unit Tests
 ==========
 
-To run the PyAMF unit tests the following software packages
-must be installed. The ``easy_install`` command will automatically
-install them for you, as described above, but you can also choose to
-download and install the packages manually.
+Install the full test dependency set and run the default test suite::
 
-- unittest2_ (included in Python 2.7 and newer)
+    python -m pip install -r test-requirements.txt
+    python -c "import pyamf.tests; pyamf.tests.main()"
 
-You can run the unit tests using setuptools like this::
-
-    python setup.py test
-
-Other libraries for unit testing are also supported, including:
-
-- nose_
-- Trial_
-
-
-C-Extension
-===========
-
-To modify the cPyAMF extension you need:
-
-- Cython_ 0.13 or newer
-
-And run the command below on the ``.pyx`` files to create the
-``.c`` file, which contains the C source for the ``cPyAMF``
-extension module::
-
-    cython amf3.pyx
-
-
-Advanced Options
-================
-
-To find out about other advanced installation options, run::
-
-    easy_install --help
-
-Also see `Installing Python Modules`_ for detailed information.
-
-To install PyAMF to a custom location::
-
-    easy_install --prefix=/path/to/installdir
+The default suite covers the supported 0.9.0 surface: AMF0, AMF3, core
+remoting, WSGI gateway behavior, and dependency-free helpers. Legacy
+integration suites for unsupported frameworks are not part of the default
+test entry point.
 
 
 Documentation
@@ -139,10 +82,10 @@ To build the main documentation you need:
 
 - Sphinx_ 1.0 or newer
 - `sphinxcontrib.epydoc`_ 0.4 or newer
-- a :doc:`copy <community/download>` of the PyAMF source distribution
+- a :doc:`copy <community/download>` of the Py3AMF source distribution
 
 Unix users run the command below in the ``doc`` directory to create the
-HTML version of the PyAMF documentation::
+HTML version of the Py3AMF documentation::
 
     make html
 
@@ -151,8 +94,7 @@ Windows users can run the make.bat file instead::
     make.bat
 
 This will generate the HTML documentation in the ``doc/build/html``
-folder. This documentation is identical to the content on the main PyAMF
-website_.
+folder.
 
 **Note**: if you don't have the `make` tool installed then you can invoke
 Sphinx from the ``doc`` directory directly like this::
@@ -165,7 +107,7 @@ Epydoc
 To build the API documentation you need:
 
 - Epydoc_ 3.0 or newer
-- a :doc:`copy <community/download>` of the PyAMF source distribution
+- a :doc:`copy <community/download>` of the Py3AMF source distribution
 
 Run the command below in the root directory to create the HTML version of
 the PyAMF API documentation::
@@ -177,25 +119,8 @@ folder.
 
 
 .. _Python: 			http://www.python.org
-.. _setuptools:			http://peak.telecommunity.com/DevCenter/setuptools
-.. _easy_install: 		http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install
+.. _pip:                       https://pip.pypa.io/
 .. _Epydoc:			http://epydoc.sourceforge.net
-.. _ElementTree:		http://effbot.org/zone/element-index.htm
 .. _lxml:			http://lxml.de
-.. _uuid:			http://pypi.python.org/pypi/uuid
-.. _wsgiref:			http://pypi.python.org/pypi/wsgiref
-.. _cElementTree: 		http://effbot.org/zone/celementtree.htm
-.. _SQLAlchemy:			http://www.sqlalchemy.org
-.. _Twisted:			http://twistedmatrix.com
-.. _Django:			http://www.djangoproject.com
-.. _Google App Engine: 		http://code.google.com/appengine
-.. _`python-pyamf`: http://packages.debian.org/python-pyamf
-.. _Elixir:			http://elixir.ematia.de
-.. _unittest2:			http://pypi.python.org/pypi/unittest2
-.. _nose:			http://somethingaboutorange.com/mrl/projects/nose
-.. _Trial:			http://twistedmatrix.com/trac/wiki/TwistedTrial
-.. _Cython:			http://cython.org
 .. _Sphinx:     		http://sphinx.pocoo.org
-.. _website:    		https://github.com/hydralabs/pyamf
-.. _Installing Python Modules: 	http://docs.python.org/install/index.html
 .. _sphinxcontrib.epydoc:       http://packages.python.org/sphinxcontrib-epydoc

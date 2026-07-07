@@ -1,1 +1,2 @@
-defusedxml
+# Runtime requirements for installing and using Py3AMF.
+defusedxml>=0.7.1
